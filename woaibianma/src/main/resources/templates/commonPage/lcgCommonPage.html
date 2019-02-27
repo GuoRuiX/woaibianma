@@ -1,0 +1,116 @@
+<#macro pageCommon page>
+<div id="pp" style="" class="easyui-pagination"
+     data-options="total:${page.totalCount},
+					layout:[
+					'list',
+					'sep',
+					'first',
+					'prev',
+					'links',
+					'next',
+					'last',
+					'sep',
+
+					]"></div>
+<script type="text/javascript">
+
+    jQuery.extend({
+        topage:function(pageurl,pageid,formid){
+            //获取for目标单的值
+            $('#pp').pagination({
+                onSelectPage:function(pageNumber, pageSize){
+                    //加载进度条
+                    var form1={};
+                    if(formid!=null){
+                        var parms=$('#'+formid).serializeArray();
+                        form1=$.formToJson(parms);
+                    }
+                    form1.pageNumber=pageNumber;
+                    form1.pageSize=pageSize;
+                    //alert("----"+JSON.stringify(form1));
+                    //$(this).pagination('loading');
+                    $.ajax({
+                        type:"POST",
+                        url:pageurl,
+                        data:form1,
+                        dataType:"json",
+                        success:function (msg) {
+                            // $("#tbody").html(msg);
+                            $('#'+pageid).datagrid('loadData',msg.resultList);
+                        }
+                    })
+                    // $(this).pagination('loaded');
+                    //夹杂进度条
+                },
+                onRefresh:function(pageNumber, pageSize){
+                    $.ajax({
+                        type:"POST",
+                        url:pageurl,
+                        data:{pageNumber:pageNumber,pageSize:pageSize},
+                        dataType:"json",
+                        success:function (msg) {
+                            $('#'+pageid).datagrid('loadData',msg.resultList);
+                        }
+                    })
+                }
+
+            });
+        },
+        formToJson:function(parms){
+            var data={};
+            $.each(parms,function(i,item){
+                data[item.name] = item.value;
+            });
+            return data;
+        },
+        submitForm:function(pageurl,pageid,formid){
+            //加载进度条
+            var form1={};
+            if(formid!=null){
+                var parms=$('#'+formid).serializeArray();
+                form1=$.formToJson(parms);
+            }
+            form1.pageNumber=1;
+            //alert("----"+JSON.stringify(form1));
+            //$(this).pagination('loading');
+            $.ajax({
+                type:"POST",
+                url:pageurl,
+                data:form1,
+                dataType:"json",
+                success:function (msg) {
+                    // $("#tbody").html(msg);
+                    $('#pp').pagination('refresh',{	// 改变选项并刷新分页栏信息
+                        total:msg.totalCount,
+                        pageSize:msg.pageSize
+                    });
+
+                    $('#'+pageid).datagrid('loadData',msg.resultList);
+                }
+            })
+        },
+        formatDate:function(format,id){
+            $('#'+id).datebox({
+                formatter:function(date){
+                    var y = date.getFullYear();
+                    var m = date.getMonth()+1;
+                    var d = date.getDate();
+                    var h = date.getHours();
+                    var mi= date.getMinutes();
+                    var ss= date.getSeconds();
+                    if(format=='y-m-d'){
+                        return y+'-'+m+'-'+d;
+                    }
+                    if(format=='y-m-d-h-mi-ss'){
+                        return y+'-'+m+'-'+d+" "+h+":"+mi+":"+ss;
+                    }
+                }
+            });
+        }
+    })
+
+   /* function submitForm(url){
+        $.topage(url)
+    }*/
+</script>
+</#macro>

@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>角色管理</title>
+	
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    
+    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+	<link href="${stylePath}/css/style.css" rel="stylesheet" type="text/css" />
+
+	<#include '../../common/header.html'>
+    <#include '../../common/page.html'>
+    <#include '../../commonPage/lcgCommonPage.html'>
+	<script type="text/javascript">
+	    
+	    $(function(){
+	    	
+	    	$("#td").datagrid({
+	    		onClickRow:function(rowIndex, rowData){
+	    			$("#hindeRoleId").val(rowData.id);
+	    			$("#hindeRoleName").val(rowData.name);
+	    		}
+	    	});
+
+	    	$(document).bind('contextmenu',function(e){
+				e.preventDefault();
+				$('#mm').menu('show', {
+					left: e.pageX,
+					top: e.pageY
+				});
+			});
+	    	
+	    	 
+	    	$('#win').window({  
+	    		title:"给选中的角色绑定权限菜单",
+	    	    width:600,    
+	    	    height:400,    
+	    	    modal:true,
+	    	    closed:true
+	    	});
+
+
+	    	//分页
+            $.topage('getRolePage.dhtml','td','form1');
+            $.formatDate('y-m-d','dd');
+            $.formatDate('y-m-d-h-mi-ss','dd1');
+            /*$('#pp').pagination({
+                onSelectPage:function(pageNumber, pageSize){
+                    //加载进度条
+                    //$(this).pagination('loading');
+                    $.ajax({
+                        type:"POST",
+                        url:"getRolePage.dhtml",
+                        data:{pageNumber:pageNumber,pageSize:pageSize},
+                        dataType:"json",
+                        success:function (msg) {
+                          // $("#tbody").html(msg);
+                          $('#td').datagrid('loadData',msg);
+                        }
+                    })
+                   // $(this).pagination('loaded');
+                    //夹杂进度条
+                },
+                onRefresh:function(pageNumber, pageSize){
+                    $.ajax({
+                        type:"POST",
+                        url:"getRolePage.dhtml",
+                        data:{pageNumber:pageNumber,pageSize:pageSize},
+                        dataType:"json",
+                        success:function (msg) {
+                            $('#td').datagrid('loadData',msg);
+                        }
+                    })
+                }
+            });*/
+
+
+
+        });
+	
+	    function bangDing(){
+	    	var roleId=$("#hindeRoleId").val();
+	    	if(roleId!=null&&roleId!=""){
+	    		var roleName=$("#hindeRoleName").val()
+	    		$("#yyy").html("当前修改的角色是："+roleName);
+	    		
+                //操作树start	
+	    		$('#tt').tree({    
+	    		    url:'${contextpath}/testTreeRole.dhtml?roleId='+roleId, 
+	    		    checkbox:true,
+	    		    cascadeCheck:false,
+	    		    onCheck:function(node, checked){
+
+	    		    	var pnode=$('#tt').tree('getParent',node.target);
+	    		    	$('#tt').tree('check', pnode.target);
+	    		    	
+	    		    	
+	    		    },
+	    		    onLoadSuccess:function(node, data){
+	    		    	$('#win').window('open');
+	    		    }
+	    		    
+    	        }); 
+	    		//操作树end
+	    	}else{
+	    		$.messager.alert('警告','必须选中一行数据！');   
+	    	}
+	    }
+	    
+	    //获取所有的选中菜单
+	    function getAllCheckedNode(){
+	    	var roleId=$("#hindeRoleId").val();
+	    	var nodes = $('#tt').tree('getChecked');
+	    	var ids="";
+	    	for(var i=0;i<nodes.length;i++){
+	    		
+	    		var id=nodes[i].id;
+	    		if(i==(nodes.length-1)){
+	    			ids=ids+nodes[i].id;
+	    		}else{
+	    			ids=ids+nodes[i].id+",";
+	    		}
+	    		
+	    	}
+	    	
+	    	$.ajax({
+	    		type:"POST",
+	    		url:"${contextpath}/roleUpdate.dhtml",
+	    		data:"roleId="+roleId+"&ids="+ids,
+	    		success:function(msg){
+	    			$.messager.alert('警告','ok');
+	    			
+	    			$("#win").window("close");
+	    		},
+	    		error:function(msg){
+	    			$.messager.alert('警告','警告消息，出错了`^_^`!');
+	    		}
+	    	})
+	    	
+	    	
+	    }
+	    
+	    
+	    function toCancel(){
+	    	
+	    	$('#win').window('close');
+	    	
+	    }
+
+	    function submitForm(){
+
+            $.submitForm('getRolePage.dhtml','td','form1')
+
+        }
+	</script>
+  </head>
+  
+  <body>
+  <@pageHeader '角色管理' '角色管理'/>
+  <div class="easyui-panel" style="width:100%;border-bottom: 0px;padding: 10px 10px;margin-top: 0px">
+      <form id="form1" method="post">
+
+          <input class="easyui-textbox" name="roleName" style="width:20%;height:30px;" data-options="label:'角色名称:'" value="">
+
+          <input id="dd" type="text" name="createDate" style="width:20%;height:30px;" class="easyui-datebox" data-options="label:'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;日期:'"></input>
+          <input id="dd1" type="text" name="createDate2" style="width:20%;height:30px;" class="easyui-datebox" data-options="label:'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;日期2:'"></input>
+          <!--<input class="easyui-textbox" name="name" style="width:20%;height:30px;" data-options="label:'Name:'" value="">-->
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <a href="javascript:void(0)" class="easyui-linkbutton"
+             onclick="submitForm()"
+             style="width:80px;height: 30px;margin-right:0px" >查询</a>
+
+      </form>
+      <!--<div style="text-align:center;padding:5px 0;float: left">
+          <a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()" style="width:80px">Submit</a>
+          <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()" style="width:80px">Clear</a>
+      </div>-->
+  </div>
+
+<table class="easyui-datagrid" style="width:100%" id="td">
+    <thead>   
+        <tr>   
+            <th data-options="field:'id',checkbox:true">ID</th>     
+            <th data-options="field:'name'">角色名称</th>   
+            <th data-options="field:'roleMiaoShu'">角色描述</th>   
+        </tr>   
+    </thead>   
+    <tbody id="tbody">
+    
+       <#list page.resultList as pp> 
+        <tr>   
+            <td>${pp.id}</td><td>${pp.name}</td><td>${pp.roleMiaoShu!''}</td>
+        </tr>   
+       </#list>
+    </tbody>
+
+</table>
+<@pageCommon page />
+
+      <input id="hindeRoleId" name="roleId" type="hidden" value=""> 
+      <input id="hindeRoleName" name="roleName" type="hidden" value=""> 
+       
+      <div id="mm" class="easyui-menu" style="width:150px;">
+		<div onclick="bangDing()">绑定权限菜单</div>
+		<div>
+			<span>Open</span>
+			<div style="width:150px;">
+				<div><b>Word</b></div>
+				<div>Excel</div>
+				<div>PowerPoint</div>
+			</div>
+		</div>
+		<div data-options="iconCls:'icon-save'">Save</div>
+		<div data-options="iconCls:'icon-print',disabled:true">Print</div>
+		<div class="menu-sep"></div>
+		<div>Exit</div>
+	</div> 
+
+    <div id="win">
+        <div style="float: left;width:50%">
+        <div style="margin-bottom:10px" id="yyy"></div><div>
+        <ul id="tt"></ul>
+        </div>
+        </div>
+        <div style="float: left;width:45%">
+            
+            <div style="text-align:right;margin-top:40%">
+            <a href="javaScript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save'" onclick="getAllCheckedNode()">保存</a>  
+            <a href="javaScript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="toCancel()">取消</a>  
+            </div>
+            
+           
+        </div>
+    </div>  
+
+  </body>
+</html>

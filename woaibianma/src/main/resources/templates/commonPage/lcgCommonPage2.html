@@ -1,0 +1,98 @@
+<#macro lcgPage page>
+
+<div id="pp" class="easyui-pagination" style="border-bottom: #00a2ca solid 1px" data-options="
+					total:${page.totalCount},
+					layout:[
+					'list',
+					'sep',
+					'first',
+					'prev',
+					'links',
+					'next',
+					'last',
+					'sep',
+					'info']
+				"></div>
+<script type="text/javascript">
+    jQuery.extend({
+        myPage:function(url,id,formid){
+
+            //分页工具条的初始化
+            $('#pp').pagination({
+                onSelectPage:function(pageNumber, pageSize){
+                    var form={};
+                    if(formid!=null&&formid!=""){
+                         form=$.formJson(formid);
+					}
+                    form.pageNo=pageNumber;
+                    form.pageSize=pageSize;
+                    $.ajax({
+                        type:"POST",
+                        url:url,
+                        data:form,
+                        dataType:"JSON",
+                        success:function(msg){
+                            //重新加载页面的数据
+                            $('#'+id).datagrid('loadData', msg.resultList);
+                        },error:function(error){
+                            $.messager.alert('错误','出错了 ^_^ !','info');
+                        }
+                    })
+                }
+            });
+        },
+		//将表单数据转为JSON对象
+		formJson:function(formid){
+             var form1={};
+             var arrs=$("#"+formid).serializeArray();
+             $.each(arrs,function(i,item){
+                 form1[item.name]=item.value;
+			 })
+			return form1;
+		},
+		//提交表单
+		submitForm:function(url,formid,tableId){
+            var form={};
+            if(formid!=null&&formid!=""){
+                form=$.formJson(formid);
+            }
+            $.ajax({
+                type:"POST",
+                url:url,
+                data:form,
+                dataType:"JSON",
+                success:function(msg){
+                    //重新加载页面的数据
+                    $('#'+tableId).datagrid('loadData', msg.resultList);
+                    //刷新分页栏的信息
+                    $('#pp').pagination('refresh',{	// 改变选项并刷新分页栏信息
+                        total:msg.totalCount,
+                    });
+
+                }
+            })
+
+		},
+		//日期框的格式化
+		dateFormat:function(formatString,dateboxId){
+            $('#'+dateboxId).datebox({
+                formatter:function(date){
+                    var y = date.getFullYear();
+                    var m = date.getMonth()+1;
+                    var d = date.getDate();
+                    var h = date.getHours();
+                    var mi= date.getMinutes();
+                    var ss= date.getSeconds();
+
+					if(formatString=='y-m-d'){
+                        return y+'-'+m+'-'+d;
+					}
+					if(formatString=='y-m-d h:mi:ss'){
+                        return y+'-'+m+'-'+d+" "+h+":"+mi+":"+ss;
+					}
+                }
+        	});
+        }
+    })
+</script>
+</#macro>

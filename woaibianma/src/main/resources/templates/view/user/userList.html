@@ -1,0 +1,248 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>用户列表</title>
+    <link href="${stylePath}/css/style.css" rel="stylesheet" type="text/css" />
+    <#include '../../common/header.html'>
+    <#include '../../common/page.html'>
+    <#include '../../commonPage/lcgCommonPage2.html'>
+
+    <script type="text/javascript">
+        $(function(){
+/*            $('#tab').datagrid({
+                singleSelect:true
+            });*/
+             //格式化日期框
+             $.dateFormat('y-m-d','dd');
+             //分页条的初始化
+             $.myPage('userListAjax.dhtml','tab','form1');
+
+             //初始化右键菜单
+             $(document).bind('contextmenu',function(e){
+                e.preventDefault();
+                $('#mm').menu('show', {
+                    left: e.pageX,
+                    top: e.pageY
+                });
+             });
+
+            //添加的弹出窗口
+            $('#win-add').window({
+                title:"新增用户",
+                width:600,
+                height:400,
+                modal:true,
+                closed:true
+            });
+            //更新用户信息的弹出窗口
+            $('#win-update').window({
+                title:"更新用户信息",
+                width:600,
+                height:400,
+                modal:true,
+                closed:true
+            });
+
+            //操作数据表格
+            $('#tab').datagrid({
+                onClickRow:function(index,row){
+                    //给修改窗口的字段进行赋值
+
+                    $("#update-userName").textbox('setValue',row.userName);
+                    $("#update-userId").val(row.id);
+
+                }
+            });
+
+
+
+        })
+        function submitForm(){
+            //提交表单
+            $.submitForm('userListAjax.dhtml','form1','tab');
+        }
+
+        //添加用户
+        function adduser(){
+            $('#win-add').window('open');
+        }
+        //保存新增用户
+        function saveForm(id){
+            var form= $.formJson(id)
+            $.ajax({
+                type:"POST",
+                url:"addUser.dhtml",
+                data:form,
+                dataType:"text",
+                success:function(msg){
+                    if(msg=='ok'){
+                        $.messager.alert('提示','添加成功！','info',function(){
+                            //刷新表格
+                            $.submitForm('userListAjax.dhtml','form1','tab');
+                            //关闭弹窗
+                            $('#win-add').window('close');
+                        });
+                    }
+                },error:function(Error){
+
+                }
+            });
+        }
+        //取消保存
+        function cancleForm(){
+            $('#win-add').window('close');
+        }
+        //修改窗口打开
+        function updateUser(){
+            $('#win-update').window('open');
+        }
+        //保存更新用户信息
+        function saveUpdateForm(id){
+            var form= $.formJson(id)
+            $.ajax({
+                type:"POST",
+                url:"updateUser.dhtml",
+                data:form,
+                dataType:"text",
+                success:function(msg){
+                    if(msg=='ok'){
+                        $.messager.alert('提示','添加成功！','info',function(){
+                            //刷新一下表格
+                            $.submitForm('userListAjax.dhtml','form1','tab');
+                            //关闭弹窗
+                            $('#win-update').window('close');
+                        });
+                    }
+                },error:function(Error){
+
+                }
+            });
+        }
+
+        //删除用户数据
+        function deleteUser(){
+            var userid= $("#update-userId").val();
+            var form={};
+            form.userId=userid;
+            $.ajax({
+                type:"POST",
+                url:"deleteUserInfo.dhtml",
+                data:form,
+                dataType:"text",
+                success:function(msg){
+                    if(msg=='ok'){
+                        $.messager.alert('提示','添加成功！','info',function(){
+                            //刷新一下表格
+                            $.submitForm('userListAjax.dhtml','form1','tab');
+                        });
+                    }
+                },error:function(Error){
+
+                }
+            });
+        }
+    </script>
+
+</head>
+<body>
+    <@pageHeader '用户管理' '编辑用户'/>
+
+
+
+    <div class="easyui-panel"  style="width:100%;padding:30px 60px;">
+        <form id="form1" method="post">
+
+                <input class="easyui-textbox" name="userName" style="width:20%;height: 30px" data-options="label:'用户名:'">
+
+                <input class="easyui-textbox" name="name" style="width:20%;height: 30px" data-options="label:'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名字:'">
+
+                <input id="dd" type="text" name="creatDate" style="width:20%;height: 30px"  class="easyui-datebox"  data-options="label:'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;日期:'"></input>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="javascript:void(0)"  class="easyui-linkbutton" onclick="submitForm()" style="width:80px;height: 30px;">查询</a>
+
+        </form>
+
+    </div>
+
+
+
+
+    <table class="easyui-datagrid" id="tab" data-options="singleSelect:true">
+        <thead>
+        <tr>
+            <th data-options="field:'id'" >ID</th>
+            <th data-options="field:'userName'">用户名</th>
+            <th data-options="field:'password'">密码</th>
+            <th data-options="field:'version'">版本号</th>
+        </tr>
+        </thead>
+        <tbody>
+
+           <#list page.resultList as user>
+               <tr>
+                   <td>${user.id}</td><td>${user.userName}</td><td>${user.passWord}</td><td>${user.version}</td>
+               </tr>
+           </#list>
+
+        </tbody>
+    </table>
+
+    <@lcgPage page />
+
+    <!-- 右键菜单 -->
+    <div id="mm" class="easyui-menu" style="width:120px;">
+        <div onclick="adduser()" data-options="iconCls:'icon-add'">添加</div>
+        <div onclick="updateUser()" data-options="iconCls:'icon-edit'">修改</div>
+        <div onclick="deleteUser()" data-options="iconCls:'icon-cancel'">删除</div>
+      <!--  <div>
+            <span>Open</span>
+            <div style="width:150px;">
+                <div>
+                    <span>M1</span>
+                    <div style="width:120px;">
+                        <div>sub1</div>
+                        <div>sub2</div>
+                        <div>sub3</div>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+    </div>
+
+    <!-- 添加的弹出窗-->
+    <div id="win-add">
+
+        <form id="formadd">
+            <br>
+            <br>
+            <input id="add-userName" class="easyui-textbox" name="userName" data-options="label:'用户名:'" style="width:50%;height: 30px">
+            <br>
+            <br>
+            <div style="text-align:center;padding:5px 0">
+                <a href="javascript:void(0)" class="easyui-linkbutton" onclick="saveForm('formadd')" style="width:80px">保存</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" onclick="cancleForm()" style="width:80px">取消操作</a>
+            </div>
+        </form>
+
+    </div>
+
+    <!-- 修改用户信息的弹出层 -->
+    <div id="win-update">
+
+        <form id="formupdate">
+            <input id="update-userId" type="hidden" name="userId" value="">
+            <br>
+            <br>
+            <input id="update-userName" class="easyui-textbox" name="userName" data-options="label:'用户名:'" style="width:50%;height: 30px">
+            <br>
+            <br>
+            <div style="text-align:center;padding:5px 0">
+                <a href="javascript:void(0)" class="easyui-linkbutton" onclick="saveUpdateForm('formupdate')" style="width:80px">保存修改</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" onclick="cancleUpdateForm()" style="width:80px">取消操作</a>
+            </div>
+        </form>
+
+    </div>
+</body>
+</html>

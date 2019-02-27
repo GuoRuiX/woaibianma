@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="${stylePath}/css/style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript" src="${stylePath}/js/jquery.js"></script>
+<script type="text/javascript">
+$(function(){	
+	//顶部导航切换
+	$(".nav li a").click(function(){
+		$(".nav li a.selected").removeClass("selected")
+		$(this).addClass("selected");
+	})	
+})	
+</script>
+
+
+</head>
+
+<body style="background:url(${stylePath}/images/topbg.gif) repeat-x;">
+
+    <div class="topleft">
+    <a href="#" target="_parent"><img src="${stylePath}/images/logo.png" title="系统首页" /></a>
+    </div>
+        
+    <ul class="nav">
+    
+    <#if menus?? && (menus?size>0)>
+         <#list menus as menu>
+            <li><a href="${contextpath}/login/loginContro/left.dhtml?index=${menu_index!'0'}" target="leftFrame" >
+            <img src="${stylePath}/images/icon01.png" title="${menu.menuName!''}" />
+            <h2>${menu.menuName!''}</h2></a></li>
+         </#list>
+    </#if>
+    </ul>
+            
+    <div class="topright">    
+    <ul>
+    <li><span><img src="${stylePath}/images/help.png" title="帮助"  class="helpimg"/></span><a href="#">帮助</a></li>
+    <li><a href="#">关于</a></li>
+    <li><a href="${contextpath}/login/loginContro/loginOut.dhtml" target="_parent">退出</a></li>
+    </ul>
+     
+    <div class="user">
+    <span>admin</span>
+    <i>消息</i>
+    <b>5</b>
+    </div>    
+    
+    </div>
+
+</body>
+</html>

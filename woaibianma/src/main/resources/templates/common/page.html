@@ -1,0 +1,44 @@
+<#macro pageHeader menu1 menu2>
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="${contextpath}/login/loginContro/index.dhtml">首页</a></li>
+    <li><a href="#">${menu1}</a></li>
+    <li><a href="#">${menu2}</a></li>
+    </ul>
+</div>
+</#macro>
+
+<!-- 弹出层分页 -->
+<#macro tanChuFenYe>
+<script type="text/javascript">
+//ajax首页
+function toFirstPage(url){
+	  //获取form表单的查询参数
+	  var data=$("#ff1").serialize();
+	  //刷新弹出层
+	  $('#dd').dialog('refresh',url+"?"+data); 
+}
+//ajax上一页
+function toPrePage(url){
+	 var data=$("#ff1").serialize();
+	  $('#dd').dialog('refresh',url+"?"+data); 
+}
+
+//ajax下一页
+function toNextPage(url){
+	 var data=$("#ff1").serialize();
+	  $('#dd').dialog('refresh', url+"?"+data); 
+}
+//ajax最后一页
+function toLastPage(url){
+	  var data=$("#ff1").serialize();
+	  $('#dd').dialog('refresh',url+"?"+data); 
+}
+//查询
+function toSarched(url){
+	   var data=$("#ff1").serialize();
+	   $('#dd').dialog('refresh',url+"?"+data);
+}
+</script>
+</#macro>

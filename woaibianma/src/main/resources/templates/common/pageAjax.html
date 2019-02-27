@@ -1,0 +1,27 @@
+<div id="content" class="easyui-panel" style="height:35px;border-top:0px;"> 
+          <table  style="width:100%">
+             <tr>
+               <td style="width:10%">
+                     <select id="cc" class="easyui-combobox" name="dept" style="width:60px;">   
+					    <option value="10">10</option>   
+					    <option value="20">20</option>   
+					    <option value="50">50</option>   
+					    <option value="100">100</option>  
+					</select>  
+                                                                              
+               </td>
+               <td style="width:30%;text-align: left">
+                                                         总记录数:${page.totalRecord}
+                                                       &nbsp;&nbsp;&nbsp;&nbsp;
+                                                         总页数: ${page.totalPage}                                 
+               </td>
+               <td style="text-align:right;width:60%;">
+		          <a id="btn" href="javaScript:void(0)" class="easyui-linkbutton" style="width:80px;" data-options="" onclick="toFirstPage('${contextpath}${page.url}')">首页</a>
+		          <a id="btn" href="javaScript:void(0)" class="easyui-linkbutton" style="width:80px;" data-options="" onclick="toPrePage('${contextpath}${page.url}')">上一页</a> 
+		          <input class="easyui-textbox" name="pageNo" data-options="" style="width:40px" value="${pageNo}"> 
+		          <a id="btn" href="javaScript:void(0)" class="easyui-linkbutton" style="width:80px;" data-options="" onclick="toNextPage('${contextpath}${page.url}')">下一页</a> 
+		          <a id="btn" href="javaScript:void(0)" class="easyui-linkbutton" style="width:80px;" data-options="" onclick="toLastPage('${contextpath}${page.url}')">尾页</a> 
+               </td>
+             </tr>
+          </table>
+     </div>

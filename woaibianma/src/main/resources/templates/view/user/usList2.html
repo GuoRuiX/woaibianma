@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="${stylePath}/css/style.css" rel="stylesheet" type="text/css" />
+<link href="${stylePath}/css/select.css" rel="stylesheet" type="text/css" />
+<#include '../../common/page.html'>
+<#include '../../common/header.html'>
+<#include '../../common/flootPage.html'>
+<script type="text/javascript">
+   
+   $(function(){
+	   
+	   $('#tb').datagrid({    
+		   onClickRow:function(rowIndex, rowData){
+			   $("#userId1").val(rowData.id);
+			   $('#buMen1').textbox('setValue',rowData.buMen);
+			   $('#loginName1').textbox('setValue',rowData.loginName);
+			   $('#userName1').textbox('setValue',rowData.userName);
+		   } 
+		});  
+	   
+	   
+	   
+	   $(document).bind('contextmenu',function(e){
+			e.preventDefault();
+			$('#mm').menu('show', {
+				left: e.pageX,
+				top: e.pageY
+			});
+		});
+	   
+	   $('#win').window({  
+		    title:'添加用户',
+		    width:400,    
+		    height:250,    
+		    modal:true,
+		    closed:true
+		});  
+	   
+	   $('#winUpdate').window({  
+		    title:'添加用户',
+		    width:400,    
+		    height:250,    
+		    modal:true,
+		    closed:true
+		});
+	   
+	   
+	   $('#winBindRole').window({  
+		    title:'绑定角色',
+		    width:800,    
+		    height:300,    
+		    modal:true,
+		    closed:true
+		}); 
+   })
+
+   //添加用户
+   function adduser(){
+	   $('#win').window('open');
+   }
+   
+   //提交表单
+   function submitForm(){
+
+	   $.ajax({ 
+		   type:'POST',
+		   url:'${contextpath}/testAddUser.dhtml',
+		   data:$("#ff").serialize(),
+		   success:function(msg){
+			   if(msg=='ok'){
+				   $.messager.alert('提示','添加成功！');    
+				   $('#ff').form('clear');
+				   $('#win').window('close');
+			   }
+		   },
+		   error:function(msg){
+			   $.messager.confirm('确认','提交失败，是否关闭提交窗口？',function(r){    
+				    if (r){    
+				    	 $('#ff').form('clear');
+						 $('#win').window('close');
+				    }    
+				});  
+
+		   }
+		   
+	   });
+	   
+   }
+   
+   //关闭清空
+   function closeForm(id,formid){
+	   $('#'+formid).form('clear');
+	   $('#'+id).window('close');
+   }
+   
+   //更新信息
+   function updateuser(){
+	   var userId=$("#userId1").val();
+	   if(userId==""||userId==null){
+		   $.messager.alert('警告','警告消息,请单击选一行数据！');
+		   return;
+	   }
+	   $('#winUpdate').window('open');
+
+   }
+   //保存更新
+   function saveUpdate(){
+	   $.ajax({ 
+		   type:'POST',
+		   url:'',
+		   data:$("#ffUpdate").serialize(),
+		   success:function(msg){
+			   if(msg=='ok'){
+				   $.messager.alert('提示','添加成功！');    
+				   $('#ff').form('clear');
+				   $('#win').window('close');
+			   }
+		   },
+		   error:function(msg){
+			   $.messager.confirm('确认','提交失败，是否关闭提交窗口？',function(r){    
+				    if (r){    
+				    	 $('#ff').form('clear');
+						 $('#win').window('close');
+				    }    
+				});  
+
+		   }
+		   
+	   });
+	   
+	   
+   }
+   
+   //绑定角色
+   function bindRole(){
+	   
+	   var uu=$("#userId1").val();
+	   if(uu==null||uu==""){
+		   $.messager.alert('警告','警告消息,选一条数据！');
+		   return;
+	   }
+ 
+	   $('#dd').dialog({    
+		    title: '绑定角色',    
+		    width: 800,    
+		    height: 300,    
+		    closed: false,    
+		    cache: false,    
+		    href: '${contextpath}/bindRolePage.dhtml?userId='+uu,    
+		    modal: true,
+		    toolbar:[{
+				text:'保存选中的角色',
+				iconCls:'icon-edit',
+				handler:function(){
+					//从弹出层获取选中的角色ID
+					var roleId=$("#roleId2").val();
+					 if(roleId==null||roleId==""){
+						   $.messager.alert('警告','警告消息,选一条角色数据！');
+						   return;
+					 }
+					 $.ajax({
+						 type:"post",
+						 url:"${contextpath}/saveRoleAndUser.dhtml",
+						 data:$('#ff1').serialize(),
+						 success:function(msg){
+							if(msg=="ok"){
+								$.messager.alert('提示','操作成功！');
+								$('#dd').window("close");
+								return;
+							}else{
+								$.messager.alert('警告','操作失败！');
+								return;
+							}
+						 },error:function(msg){
+							 $.messager.alert('警告',msg);
+								return;
+						 }
+						 
+					 });
+				}
+			}]
+		});   
+	   
+   }
+   
+
+</script>
+<@tanChuFenYe/>
+</head>
+
+
+<body>
+
+	<@pageHeader '用户管理' '编辑用户'/>
+    <div style="margin-top:0px">
+    <table id="tb" class="easyui-datagrid" 
+    style="width:100%;height:auto;" 
+    data-options="fitColumns:true,singleSelect:true" >   
+	    <thead >   
+	        <tr>   
+	            <th data-options="field:'id',hidden:'true'" >id</th>   
+	            <th data-options="field:'buMen'" width="33%">部门名称</th>   
+	            <th data-options="field:'userName'" width="34%">用户名</th>   
+	            <th data-options="field:'loginName'" width="33%">用户登录名称</th>    
+	        </tr>   
+	    </thead> 
+	    <tbody>   
+        <#list page.resultList as user>
+           <tr>   
+            <td>${user.id}</td>
+            <td>${user.buMen}</td>
+            <td>${user.userName}</td>
+            <td>${user.loginName}</td>   
+           </tr> 
+        </#list>      
+        </tbody>  
+	</table>  
+    </div>
+    <@flootPage page.url page.totalCount page.totalPage page.pageNo page.prePage page.nextPage/>
+    
+    
+    <div id="mm" class="easyui-menu" style="width:140px;">
+		<div data-options="iconCls:'icon-add'" onclick="adduser()">新增用户</div>
+		<div data-options="iconCls:'icon-edit'" onclick="updateuser()">编辑用户</div>
+		<div data-options="iconCls:'icon-cancel'">删除选中用户</div>
+		<div data-options="iconCls:'icon-edit'" onclick="bindRole()">去绑定</div>
+	</div>
+    
+    <!-- 新增 -->
+    <div id="win">
+        
+      <div class="easyui-panel" title="" style="width:100%;height:auto;border:0px;padding:30px 60px;">
+		<form id="ff" method="post">
+			<div style="margin-bottom:10px">
+				<input class="easyui-textbox"  name="buMen" style="width:100%" data-options="label:'部门名称'">
+			</div>
+			<div style="margin-bottom:10px">
+				<input class="easyui-textbox" name="loginName" style="width:100%;" data-options="label:'登录名称'">
+			</div>
+			<div style="margin-bottom:10px">
+				<input class="easyui-textbox" name="userName" style="width:100%;" data-options="label:'用户名称'">
+			</div>
+		</form>
+		<div style="text-align:center;padding:5px 0">
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()" style="width:80px">保存</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="closeForm('win','ff')" style="width:80px">取消</a>
+		</div>
+	</div>
+    
+    </div>
+    
+    
+    <!-- 修改 -->
+    <div id="winUpdate">
+       <div class="easyui-panel" title="" style="width:100%;height:auto;border:0px;padding:30px 60px;">
+		<form id="ffUpdate" method="post">
+			<input id="userId1" type="hidden" name="userId" value=""/>
+			<div style="margin-bottom:10px">
+				<input class="easyui-textbox" id="buMen1"  name="buMen" style="width:100%" data-options="label:'部门名称'">
+			</div>
+			<div style="margin-bottom:10px">
+				<input class="easyui-textbox" id="loginName1" name="loginName" style="width:100%;" data-options="label:'登录名称'">
+			</div>
+			<div style="margin-bottom:10px">
+				<input class="easyui-textbox" id="userName1" name="userName" style="width:100%;" data-options="label:'用户名称'">
+			</div>
+		</form>
+		<div style="text-align:center;padding:5px 0">
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="saveUpdate()" style="width:80px">保存</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="closeForm('winUpdate','ffUpdate')" style="width:80px">取消</a>
+		</div>
+	</div>
+    </div>  
+    
+    <div id="dd">
+    </div> 
+    
+    
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+  
+
+    <settings>
+        <setting name="lazyLoadingEnabled" value="false" />
+        <setting name="cacheEnabled" value="false" />
+    </settings>
+
+  
+  <!-- 别名 -->
+  <typeAliases>
+      <typeAlias type="com.zbf.woaibianma.entity.User" alias="user"></typeAlias>
+      <typeAlias type="com.zbf.woaibianma.entity.Menu" alias="menu"></typeAlias>
+      <typeAlias type="com.zbf.woaibianma.entity.Role" alias="role"></typeAlias>
+     <typeAlias type="com.zbf.woaibianma.core.entity.Page" alias="page" /><!-- 使用分页第二插件的话需要只传入一个参数page -->
+  </typeAliases>
+  
+  <!-- 配置分页插件 -->
+  <plugins>
+
+      <plugin interceptor="com.zbf.woaibianma.core.mybatis.page2.ItsMeQueryInterceptor">
+          <property name="databaseType" value="mysql"/>
+      </plugin>
+
+  </plugins>
+
+  
+</configuration>

@@ -1,0 +1,134 @@
+<#macro flootPage url totalRecord totalPage pageNo prePageNo nextPageNo>
+   <div id="content" class="easyui-panel" style="height:35px;border-top:0px;"> 
+          <table  style="width:100%">
+             <tr>
+               <td style="width:10%">
+                     <select id="cc" class="easyui-combobox" name="dept" style="width:60px;">   
+					    <option value="10">10</option>   
+					    <option value="20">20</option>   
+					    <option value="50">50</option>   
+					    <option value="100">100</option>  
+					</select>  
+                                                                              
+               </td>
+               <td style="width:30%;text-align: left">
+                                                         总记录数:${totalRecord}
+                                                       &nbsp;&nbsp;&nbsp;&nbsp;
+                                                         总页数: ${totalPage}                                 
+               </td>
+               <td style="text-align:right;width:60%;">
+		          <a id="btn" href="javaScript:void(0)" class="easyui-linkbutton" style="width:80px;" data-options="" onclick="shouye()">首页</a>
+		          <a id="btn" href="javaScript:void(0)" class="easyui-linkbutton" style="width:80px;" data-options="" onclick="prePage()">上一页</a> 
+		          <input class="easyui-textbox" name="pageNo" data-options="" style="width:40px" value="${pageNo}"> 
+		          <a id="btn" href="javaScript:void(0)" class="easyui-linkbutton" style="width:80px;" data-options="" onclick="nextPage()">下一页</a> 
+		          <a id="btn" href="javaScript:void(0)" class="easyui-linkbutton" style="width:80px;" data-options="" onclick="lastye()">尾页</a> 
+               </td>
+             </tr>
+          </table>
+     </div>
+     <script type="text/javascript">
+     
+           //首页
+           function shouye(){
+        	   var path="${contextpath}${url!''}?pageNo=1";      	   
+        	   window.location.href=path;
+           }
+           
+           
+           
+           //最后一页
+            function lastye(){
+        	   var path="${contextpath}${url!''}?pageNo="+${totalPage};
+        	   
+        	   window.location.href=path;
+           }
+            
+            
+           //上一页
+           
+            function prePage(){
+        	   var path="${contextpath}${url!''}?pageNo="+${prePageNo};
+        	   
+        	   window.location.href=path;
+           }
+            
+           //下一页
+           
+            function nextPage(){
+        	   var path="${contextpath}${url!''}?pageNo="+${nextPageNo};
+        	   
+        	   window.location.href=path;
+           }
+     </script> 
+</#macro>
+
+<#macro flootFormPage url totalRecord totalPage pageNo prePageNo nextPageNo formId>
+   <div id="content" class="easyui-panel" style="height:35px;border-top:0px;"> 
+          <table  style="width:100%">
+             <tr>
+               <td style="width:10%">
+                     <select id="cc" class="easyui-combobox" name="dept" style="width:60px;">   
+					    <option value="10">10</option>   
+					    <option value="20">20</option>   
+					    <option value="50">50</option>   
+					    <option value="100">100</option>  
+					</select>  
+                                                                              
+               </td>
+               <td style="width:30%;text-align: left">
+                                                         总记录数:${totalRecord}
+                                                       &nbsp;&nbsp;&nbsp;&nbsp;
+                                                         总页数: ${totalPage}                                 
+               </td>
+               <td style="text-align:right;width:60%;">
+		          <a id="btn" href="javaScript:void(0)" class="easyui-linkbutton" style="width:80px;" data-options="" onclick="shouye()">首页</a>
+		          <a id="btn" href="javaScript:void(0)" class="easyui-linkbutton" style="width:80px;" data-options="" onclick="prePage()">上一页</a> 
+		          <input class="easyui-textbox" name="pageNo" data-options="" style="width:40px" value="${pageNo}"> 
+		          <a id="btn" href="javaScript:void(0)" class="easyui-linkbutton" style="width:80px;" data-options="" onclick="nextPage()">下一页</a> 
+		          <a id="btn" href="javaScript:void(0)" class="easyui-linkbutton" style="width:80px;" data-options="" onclick="lastye()">尾页</a> 
+               </td>
+             </tr>
+          </table>
+     </div>
+     <script type="text/javascript">
+     
+           //首页
+           function shouye(){
+        	   var pp=$("#${formId}").serialize();
+        	   
+        	   var path="${url!''}?pageNo=1&"+pp;
+        	   
+        	   window.location.href=path;
+        	
+           }
+           
+           
+           
+           //最后一页
+            function lastye(){
+            	var pp=$("#${formId}").serialize();
+        	   var path="${url!''}?pageNo="+${totalPage}+"&"+pp;
+        	   
+        	   window.location.href=path;
+           }
+            
+            
+           //上一页
+           
+            function prePage(){
+            	var pp=$("#${formId}").serialize();
+        	   var path="${url!''}?pageNo="+${prePageNo}+"&"+pp;
+        	   
+        	   window.location.href=path;
+           }
+            
+           //下一页
+           
+            function nextPage(){
+            	var pp=$("#${formId}").serialize();
+        	   var path="${url!''}?pageNo="+${nextPageNo}+"&"+pp;
+        	   
+        	   window.location.href=path;
+           }
+     </script> 
+</#macro>

@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>LCG我爱编码</title>
+<link href="${stylePath}/css/style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript" src="${stylePath}/js/jquery.js"></script>
+<script src="${stylePath}/js/cloud.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+    function tttt(){
+        alert("cdjhcgh");
+    }
+
+$(function(){
+	
+	if (window != top) 
+	top.location.href = location.href;
+	
+	
+    $('.loginbox').css({'position':'absolute','left':($(window).width()-692)/2});
+	$(window).resize(function(){  
+    $('.loginbox').css({'position':'absolute','left':($(window).width()-692)/2});
+    })  
+    
+    $("#yanZhengMa").click(function(){
+    	var path=$("#yanZhengMa").attr("src");
+    	var path2=path+"?"+Math.round(1);
+    	$("#yanZhengMa").attr("src",path2);
+    });
+	
+	$("#zhanghu").focus(function(){
+		$("#zhanghu").val("");
+	});
+	$("#zhanghu").blur(function(){
+		var zh=$("#zhanghu").val();
+		if(zh==""){
+			$("#zhanghu").val("请输入账户");
+		}		
+	});
+});
+
+ 
+</script> 
+
+</head>
+
+<body style="background-color:#1c77ac; background-image:url(${stylePath}/images/light.png); background-repeat:no-repeat; background-position:center top; overflow:hidden;">
+
+
+
+    <div id="mainBody">
+      <div id="cloud1" class="cloud"></div>
+      <div id="cloud2" class="cloud"></div>
+    </div>  
+
+
+<div class="logintop">    
+    <span style="font-size: 16px;font-style: italic;">欢迎登录后台管理界面平台-LCG我爱编码</span>
+    <ul>
+    <li><a href="#">回首页</a></li>
+    <li><a href="#">帮助</a></li>
+    <li><a href="#">关于</a></li>
+    </ul>    
+    </div>
+    <form action="${contextpath}/login/loginContro/login.dhtml" method="post">
+      <div class="loginbody">
+    
+   <!--  <span class="systemlogo"></span>  -->
+   
+         <div style="width:320px;
+			         height:400px;border-radius:5px;float:right;margin-right:20%;margin-top:5%;
+			         position:relative;background:rgba(224,224,224,0.2)">
+               
+               <label style="font-size:16px;font-style:oblique;font-weight:lighter;
+                             margin-left:40px;position:absolute;top:25px;
+               ">系统账户</label>                
+               <label style="position:absolute;top:25px;left:120px;color:#9E1E2B;font-size:14px;letter-spacing:2px;">${errorLogin!''}</label>
+               <div style="width:240px;height:37px;background:rgba(224,224,224,0.3);
+                    margin-top:50px;margin-left:40px;text-align:center;
+                    border-radius:5px;padding-top:1px">
+                                                                
+                   <input type="text" name="userName" value="请输入账户"  id="zhanghu"
+                   style="background:rgba(0,0,0,0);outline:none;border:none;width:230px;height:35px;border-radius:5px;font-size:14px;font-weight:lighter;"/>
+               
+               </div> 
+               
+                <label style="font-size:16px;font-style:oblique;
+                             margin-left:40px;position:absolute;top:110px;font-weight:lighter;">密码</label> 
+                <label style="position:absolute;top:110px;left:120px;color:#9E1E2B;font-size:14px;letter-spacing:2px;"></label>              
+               <div style="width:240px;height:37px;background:rgba(224,224,224,0.3);
+                    margin-top:50px;margin-left:40px;text-align:center;
+                    border-radius:5px;padding-top:1px;">                   
+                   <input type="password" name="passWord" value="" style="background:rgba(0,0,0,0);outline:none;border:none;width:230px;height:35px;"/>
+               </div> 
+               <label style="font-size:16px;font-style:oblique;
+                             margin-left:40px;position:absolute;top:200px;font-weight:lighter;">验证码</label> 
+               <label style="position:absolute;top:200px;left:120px;color:#9E1E2B;font-size:14px;letter-spacing:2px;">${errorCode!''}</label>
+               <div style="width:120px;height:37px;background:rgba(224,224,224,0.3);
+                    margin-top:50px;margin-left:40px;text-align:center;
+                    border-radius:5px;padding-top:1px;">                   
+                   <input type="text" name="verCode" value="" style="background:rgba(0,0,0,0);outline:none;border:none;width:118px;height:35px;font-size:16px;text-align:center;"/>
+               </div>
+               <img src="${contextpath}/image/main" alt="" id="yanZhengMa"
+                  style="margin-top:-37px;position:absolute;left:170px;border-radius:5px;"/> 
+               <div style="position: absolute; margin-top:25px;left:40px" >
+               <label style="width:120px"><input name="" type="checkbox" value="" checked="checked" />记住密码</label><label style="margin-left:60px;"><a href="#">&nbsp;&nbsp;&nbsp;忘记密码？</a></label>     
+               </div>
+               
+               <div style="width:240px;height:37px;position:absolute; margin-top:60px;left:40px;text-align:center;">
+                  <input type="submit" class="loginbtn" value="登录"  onclick="toSubmit()" />
+               </div>
+               
+         </div>
+         
+         </div>
+    </form>
+    </div>
+    
+    
+    
+    <div class="loginbm">版权所有  2018  LCG我爱编码</div>
+	
+    
+</body>
+
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="${stylePath}/css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="${stylePath}/js/jquery.js"></script>
+<script type="text/javascript">
+$(function(){
+	now = new Date();
+	hour = now.getHours();
+	if(hour < 6){
+		document.getElementById("wenhou").innerHTML=""+'${user.loginName!''}'+"   凌晨好，欢迎使用信息管理系统";} 
+	else if (hour < 9){
+		document.getElementById("wenhou").innerHTML=""+'${user.loginName!''}'+"   早上好，欢迎使用信息管理系统";} 
+	else if (hour < 12){
+		document.getElementById("wenhou").innerHTML=""+'${user.loginName!''}'+"   上午好，欢迎使用信息管理系统";} 
+	else if (hour < 14){
+		document.getElementById("wenhou").innerHTML=""+'${user.loginName!''}'+"   中午好，欢迎使用信息管理系统";} 
+	else if (hour < 17){
+		document.getElementById("wenhou").innerHTML=""+'${user.loginName!''}'+"   下午好，欢迎使用信息管理系统";} 
+	else if (hour < 19){
+		document.getElementById("wenhou").innerHTML=""+'${user.loginName!''}'+"   傍晚好，欢迎使用信息管理系统";} 
+	else if (hour < 22){
+		document.getElementById("wenhou").innerHTML=""+'${user.loginName!''}'+"   晚上好，欢迎使用信息管理系统";} 
+	else {
+		document.getElementById("wenhou").innerHTML=""+'${user.loginName!''}'+"   夜里好，欢迎使用信息管理系统";}
+}) 
+</script>
+<#include 'common/header.html'>
+<@easyui/>
+</head>
+
+
+<body>
+    <@menu menus/>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="#">首页</a></li>
+    </ul>
+    </div>
+    
+    <div class="mainindex">
+    
+    
+    <div class="welinfo">
+    <span><img src="${stylePath}/images/sun.png" alt="天气" /></span>
+    <b id="wenhou">早上好，欢迎使用信息管理系统</b>(www.ZuiBeiFang.com)
+    <a href="#">帐号设置</a>
+    </div>
+    
+     <div class="xline"></div>
+    
+    <div class="welinfo">
+    <span><img src="${stylePath}/images/time.png" alt="时间" /></span>
+    <i>您上次登录的时间：2013-10-09 15:22</i> （不是您登录的？<a href="#">请点这里</a>）
+    </div>
+    <div class="xline"></div>
+    <font style="font-size:15px">主目录区</font>
+    <ul class="iconlist">
+    <#if (menus??)&&(menus?size>0)>
+	    <#list menus as menu>
+	         <li class="zli" id="${menu.id!''}"><img class="zimg" src="${stylePath}/images/shezhi.jpg" /><p><a class="pa" href="#">${menu.menuName!''}</a></p></li>
+	         
+	    </#list>
+	</#if>       
+    </ul>
+
+    <div class="xline"></div>
+    
+    <div class="ibox"><a class="ibtn"><img src="${stylePath}/images/iadd.png" />添加快捷功能</a></div>
+    
+    <div class="box"></div>
+    
+
+    
+    
+    </div>
+    
+    <form id="conten_form" action="" method="post">
+    
+    </form>
+
+</body>
+
+</html>

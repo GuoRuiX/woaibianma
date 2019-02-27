@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>菜单配置</title>
+<link href="${stylePath}/css/style.css" rel="stylesheet" type="text/css" />
+<#include 'common/header.html'>
+<#include 'common/page.html'>
+</head>
+
+<body>
+
+	<@pageHeader '菜单管理' '菜单配置演示'/>
+    
+    <div class="formbody">
+     <span style="font-weight:bold;font-size:12px;color:orange;">温馨提示：单击右键进行，添加，删除，修改等操作（这是一个同类型的演示）</span>
+    </div>
+    
+    <script type="text/javascript">
+    
+    $(function(){
+    	//加载树状的表格
+    	$('#tt').treegrid({    
+            url:'${contextpath}/login/loginContro/menuDataGridList.dhtml',    
+            idField:'id',    
+            treeField:'menuName',    
+            columns:[[    
+                {title:'菜单名称',field:'menuName',width:'20%'},    
+                {field:'url',title:'菜单URL路径',width:'30%'},    
+                {field:'code1',title:'菜单编码',width:'15%'},    
+                {field:'parentCode1',title:'父级菜单编码',width:'20%'},    
+                {field:'leval',title:'菜单等级',width:'10%'}    
+            ]] ,
+            onClickRow:function(row){
+            	$("#parentId").val(row.id);
+            	$("#leval1").val(row.leval);
+            	$("#parentCode1").val(row.parentCode);
+            	$("#menuName1").val(row.menuName);
+            	$("#code1").val(row.code1);
+            }
+        }); 
+    	
+    	
+    	//右键菜单start
+    	$(document).bind('contextmenu',function(e){
+			e.preventDefault();
+			$('#mm').menu('show', {
+				left: e.pageX,
+				top: e.pageY
+			});
+		});
+    	//右键菜单end
+    	
+    	
+    	//一级菜单弹出层start
+    	$('#win1').window({ 
+    		title:"添加一级菜单",
+		    width:450,    
+		    height:280,    
+		    modal:true,
+		    closed:true
+		});
+    	//一级菜单弹出层end
+    	
+    	//二级菜单弹出层start
+    	$('#win2').window({ 
+    		title:"添加二级菜单",
+		    width:500,    
+		    height:300,    
+		    modal:true,
+		    closed:true
+		});
+    	//二级菜弹出层end
+    	
+    	
+    	//三级菜单弹出层start
+    	$('#win3').window({ 
+    		title:"添加三级菜单",
+		    width:500,    
+		    height:300,    
+		    modal:true,
+		    closed:true
+		});
+    	//三级菜弹出层end
+    	
+    	//四级菜单弹出层start
+    	$('#win4').window({ 
+    		title:"添加四级菜单（按钮）",
+		    width:500,    
+		    height:300,    
+		    modal:true,
+		    closed:true
+		});
+    	//四级菜弹出层end
+    });
+  
+    //添加菜单
+    function addMenu(){
+    	
+      var parentId=	$("#parentId").val();
+      var code=	$("#code1").val();
+      var leval= $("#leval1").val();
+  	  var parentCode=$("#parentCode1").val();
+  	  var menuName=$("#menuName1").val();
+     
+      
+      if(parentId==""||parentId==null){
+    	  //添加一级菜单
+    	  $('#win1').window('open');
+      }else if(leval=="1"){
+    	  //表示要添加二级菜单
+    	  $("#cc2").html(menuName);//父级菜单的名称
+    	  $("#parentCode22").val(code);
+    	  //打开弹出层
+    	  $('#win2').window('open');
+      }else if(leval=="2"){
+    	  //表示要添加三级菜单
+    	  $("#cc3").html(menuName);//父级菜单的名称
+    	  $("#parentCode33").val(code);
+    	  //打开弹出层
+    	  $('#win3').window('open');
+      }else if(leval=="3"){
+    	  //表示要添加三级菜单
+    	  $("#cc4").html(menuName);//父级菜单的名称
+    	  $("#parentCode44").val(code);
+    	  //打开弹出层
+    	  $('#win4').window('open');
+
+      }
+      
+    }
+    
+    //保存菜单
+    function save(formId){
+    	var path=$("#"+formId).attr("action");
+    	var data=$("#"+formId).serialize();
+    	$.ajax({
+    		
+    		type:"POST",
+    		url:path,
+    		data:data,
+    		success:function(msg){
+    			if(msg=="ok"){
+    				$.messager.alert('提示','添加OK！');  
+    				 window.location.href="${contextpath}/login/loginContro/menuList.dhtml";
+    			}
+    			
+    		},error:function(msg){
+    			$.messager.alert('警告','添加失败：'+msg);  
+    		}
+    		
+    	});
+    	
+    	
+    }
+    </script>
+    
+    
+    <table id="tt" style="width:100%;height:auto"></table>  
+    
+    <input type="hidden" id="parentId" value=""/>
+    <input type="hidden" id="leval1" value=""/>
+    <input type="hidden" id="parentCode1" value=""/>
+    <input type="hidden" id="menuName1" value=""/>
+    <input type="hidden" id="code1" value=""/>
+    
+    <!-- 右键菜单start -->
+    <div id="mm" class="easyui-menu" style="width:150px;">
+	   <div onclick="addMenu()" data-options="iconCls:'icon-add'">添加菜单</div>
+	   <div onclick="javascript:alert('new')">New</div>
+	   <div onclick="javascript:alert('new')">New</div>
+	   <div onclick="javascript:alert('new')">New</div>
+    </div>
+    <!-- 右键菜单end -->
+    
+    <!-- 一级菜单弹出层start -->
+      
+      <div id="win1">
+          
+       <div class="easyui-panel" style="width:100%;padding:30px 60px;border:0px">
+		<form id="ff1" method="post" action="${contextpath}/addTestMenu.dhtml">
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="menuName" style="width:100%" data-options="label:'菜单名称'">
+			</div>
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="url" style="width:100%" data-options="label:'菜单路径'">
+			</div>
+			<p><span style="float:left;margin-left:50px">菜单等级：</span><span id="cc" style="float:left;">1<span></p> <br/>
+			<input type="hidden" name="leval" value="1"/>
+		</form>
+		<div style="text-align:center;padding:5px 0">
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="save('ff1')" style="width:80px">保存</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clear('ff1')" style="width:80px">取消</a>
+		</div>
+	</div>
+      
+      </div> 
+    
+    <!-- 一级菜单弹出层end -->
+    
+    
+    <!-- 二级菜单的添加弹出层 -->
+    <div id="win2">
+      <br/> 
+       <div class="easyui-panel" style="width:100%;padding:30px 60px;border:0px">
+		<form id="ff2" method="post" action="${contextpath}/addTestMenu.dhtml">
+		    <input type="hidden" name="leval" value="2"/>  
+			<input id="parentCode22" type="hidden" name="parentCode" value=""/> 
+		   <p>
+	          <span style="float:left;margin-left:50px">父级菜单等级：</span>
+	           <span style="float:left;">1<span>
+	
+	          <span style="float:left;margin-left:50px">父级菜单名称：</span>
+	           <span id="cc2" style="float:left;"><span>
+	       </p> 
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="menuName" style="width:100%" data-options="label:'二级菜单名称'">
+			</div>
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="url" style="width:100%" data-options="label:'二级菜单路径'">
+			</div>
+			<p><span style="float:left;margin-left:50px">当前添加的菜单等级：</span><span id="cc" style="float:left;">2<span></p> <br/>
+		</form>
+		<div style="text-align:center;padding:5px 0">
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="save('ff2')" style="width:80px">保存</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clear('ff2')" style="width:80px">取消</a>
+		</div>
+	   </div>
+       
+   </div>
+    
+    
+    
+    <!-- 三级菜单的添加弹出层 -->
+    <div id="win3">
+      <br/> 
+       <div class="easyui-panel" style="width:100%;padding:30px 60px;border:0px">
+		<form id="ff3" method="post" action="${contextpath}/addTestMenu.dhtml">
+		    <input type="hidden" name="leval" value="3"/>  
+			<input id="parentCode33" type="hidden" name="parentCode" value=""/> 
+		   <p>
+	          <span style="float:left;margin-left:50px">父级菜单等级：</span>
+	           <span style="float:left;">1<span>
+	
+	          <span style="float:left;margin-left:50px">父级菜单名称：</span>
+	           <span id="cc3" style="float:left;"><span>
+	       </p> 
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="menuName" style="width:100%" data-options="label:'三级菜单名称'">
+			</div>
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="url" style="width:100%" data-options="label:'三级菜单路径'">
+			</div>
+			<p><span style="float:left;margin-left:50px">当前添加的菜单等级：</span><span id="cc" style="float:left;">3<span></p> <br/>
+		</form>
+		<div style="text-align:center;padding:5px 0">
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="save('ff3')" style="width:80px">保存</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clear('ff3')" style="width:80px">取消</a>
+		</div>
+	   </div>
+       
+   </div>
+    
+    
+    <!-- 四级菜单的添加弹出层 -->
+    <div id="win4">
+      <br/> 
+       <div class="easyui-panel" style="width:100%;padding:30px 60px;border:0px">
+		<form id="ff4" method="post" action="${contextpath}/addTestMenu.dhtml">
+		    <input type="hidden" name="leval" value="4"/>  
+			<input id="parentCode44" type="hidden" name="parentCode" value=""/> 
+		   <p>
+	          <span style="float:left;margin-left:50px">父级菜单等级：</span>
+	           <span style="float:left;">1<span>
+	
+	          <span style="float:left;margin-left:50px">父级菜单名称：</span>
+	           <span id="cc4" style="float:left;"><span>
+	       </p> 
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="menuName" style="width:100%" data-options="label:'四级菜单名称'">
+			</div>
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="url" style="width:100%" data-options="label:'四级菜单路径'">
+			</div>
+			<p><span style="float:left;margin-left:50px">当前添加的菜单等级：</span><span id="cc" style="float:left;">4<span></p> <br/>
+		</form>
+		<div style="text-align:center;padding:5px 0">
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="save('ff4')" style="width:80px">保存</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clear('ff4')" style="width:80px">取消</a>
+		</div>
+	   </div>
+       
+   </div>
+    
+    
+</body>
+
+</html>

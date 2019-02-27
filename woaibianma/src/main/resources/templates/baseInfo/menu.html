@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>菜单配置</title>
+<link href="${stylePath}/css/style.css" rel="stylesheet" type="text/css" />
+<#include '../common/header.html'>
+<#include '../common/page.html'>
+</head>
+
+<body>
+
+	<@pageHeader '菜单管理' '菜单配置'/>
+    
+    <div class="formbody">
+     <span style="font-weight:bold;font-size:12px;color:orange;">提示：单击右键进行，添加，删除，修改等操作</span>
+    </div>
+    
+    <script type="text/javascript">
+    
+	    function onContextMenu(e,row){
+
+	    	$("#menuId").val(row.id);
+	    	$("#menuLeval").val(row.leval);
+	    	$("#menuName").val(row.menuName);
+	    	$("#code1").val(row.code1);
+	    	$("#url1").val(row.url);
+	    	$("#imagePath1").val(row.imagePath);
+	    	
+	    }
+    
+       $(function(){
+
+    	   $('#tt').treegrid({    
+    		    url:'${contextpath}/login/loginContro/menuDataGridList.dhtml',
+    		    method:'post',
+    		    idField:'id',    
+    		    treeField:'menuName',
+    		    nowrap:false,
+    		    columns:[[  
+                    {title:'',field:'id',width:'1%',hidden:'true'},      
+    		        {field:'menuName',title:'菜单名称',width:'15%'},        
+    		        {field:'url',title:'引用地址',width:'20%'},    
+    		        {field:'imagePath',title:'图片地址',width:'20%'},    
+    		        {field:'code1',title:'编码',width:'15%'},    
+    		        {field:'parentCode1',title:'父级编码',width:'15%'},   
+    		        {field:'leval',title:'菜单等级',width:'14%'}  
+    		    ]] ,
+    		    onContextMenu:onContextMenu
+    		});
+    	   
+    	   
+    	   $(document).bind('contextmenu',function(e){
+				e.preventDefault();
+				$('#mm').menu('show', {
+					left: e.pageX,
+					top: e.pageY
+				});
+			});
+       })
+       
+       function todid(did){  	   
+    	   var id=$("#menuId").val();
+    	   $("#menuId").val("");
+    	   var leval=$("#menuLeval").val();
+    	   $("#menuLeval").val("");
+    	   var menuName=$("#menuName").val();
+    	   $("#menuName").val("");
+    	   var code1=$("#code1").val();
+    	   $("#code1").val("");
+    	   var url=$("#url1").val();
+    	   $("#url1").val("");
+    	   var imagePath=$("#imagePath1").val();
+    	   $("#imagePath1").val("");
+    	   if(id!=''&&id!=null){
+    		   if(did==1){//添加
+    			   if(leval=="1"){
+    				   document.getElementById("cc").innerHTML="二级";  				   
+    				   document.getElementById("leval").value="2";  				   
+    			   }else if(leval=="2"){
+    				   document.getElementById("cc").innerHTML="三级";
+    				   document.getElementById("leval").value="3"; 
+    			   }else if(leval=="3"){//四级菜单表示按钮
+    				   document.getElementById("cc").innerHTML="四级按钮";
+    				   document.getElementById("leval").value="4";
+    			   }else if(leval=="4"){
+    				   $.messager.alert('警告','该级别不可再添加子菜单！','warning');
+    				   return;
+    			   } 
+    			   document.getElementById("funame").innerHTML=menuName;
+    			   document.getElementById("parentCode").value=code1;
+    			   openDig("win");
+    		   }else if(did==2){//删除菜单
+    			   $.messager.confirm('提示', '确定删除本菜单以及它的子菜单？', function(r){
+    					if(r){
+    						$.ajax({   		   
+    		    	    		   type:"POST",
+    		    	    		   url:"${contextpath}/login/loginContro/deleteMenu.dhtml",
+    		    	    		   data:"id="+id,
+    		    	    		   dataType:"text",
+    		    	    	       success:function(msg){
+    		    	    	    	   $.messager.alert('提示','删除成功!','info',function(){
+    		    	    	    		   window.location.href="${contextpath}/login/loginContro/menuListTest.dhtml";
+    		    	    	    	   })
+    		    	    	    	   
+    		    	    	       },
+    		    	    	       error:function (XMLHttpRequest, textStatus, errorThrown){
+    		    	    	    	   $.messager.alert('警告','出错了！','warning');   
+    		    	    	       }
+    		    	    	   });
+    					}
+    				});
+    		   }else if(did==3){//修改   			  
+    		       $("#m7").val(menuName);
+    		       $("#m8").val(url);
+    		       $("#m9").val(imagePath);
+    		       $("#id2").val(id);
+    		       openDigEdit("win2");
+    		       
+    		   }else if(did==4){    			   
+    			   window.location.href="${contextpath}/login/loginContro/menuList.dhtml"
+    		   }else if(did==5){
+    			   openDig("win1");
+    		   }
+    	   }else{
+    		   $.messager.alert('警告','请在表格上右键进行修改！','warning');    
+    	   }  	   
+       }
+       
+       
+       function openDig(id){
+
+    	   $('#'+id).window({
+    		   title:"添加菜单",
+    		    width:400,    
+    		    height:220, 
+    		    cache:false,
+    		    modal:false ,
+    		    minimizable:false,
+    		    maximizable:false,
+    		    collapsible:false,
+    		    resizable:false
+    		}); 
+   		
+       }
+       function openDigEdit(id){
+
+    	   $('#'+id).window({
+    		   title:"编辑菜单",
+    		    width:400,    
+    		    height:160, 
+    		    cache:false,
+    		    modal:false ,
+    		    minimizable:false,
+    		    maximizable:false,
+    		    collapsible:false,
+    		    resizable:false
+    		}); 
+   		
+       }
+       
+       function saveForm(id,formId){
+    	   //检测
+    	   if(formId=="formdata"){
+    		  var a1= $("#1").val();
+    		  var a2= $("#2").val();
+    		  var a3= $("#3").val();
+    		  if(a1==""||a2==""||a3==""){
+    			  $.messager.alert('警告','请把信息补充完整！','warning');  
+    			 return; 
+    		  }
+    	   }else{
+    		  var a4= $("#4").val();
+     		  var a5= $("#5").val();
+     		  var a6= $("#6").val();
+     		 if(a4==""||a5==""||a6==""){
+     			 $.messager.alert('警告','请把信息补充完整！','warning');  
+    			 return; 
+    		  }
+    	   }
+    	   $.ajax({   		   
+    		   type:"POST",
+    		   url:"${contextpath}/login/loginContro/toSaveMenu.dhtml",
+    		   data:$("#"+formId).serialize(),
+    		   dataType:"text",
+    	       success:function(msg){
+    	    	   $.messager.alert('提示','添加成功！','info',function(){
+    	    		   $('#'+id).window('close');
+    	    		   window.location.href="${contextpath}/login/loginContro/menuList.dhtml";
+    	    	   })
+    	    	   
+    	       },
+    	       error:function (XMLHttpRequest, textStatus, errorThrown){
+    	    	   $.messager.alert('警告','请在表格上右键进行修改！','warning');   
+    	       }
+    	   });
+       }
+       function saveForm2(id,formId){
+
+    		 var a4= $("#m7").val();
+     		 if(a4==""){
+     			 $.messager.alert('警告','菜单名称必填！','warning');  
+    			 return; 
+    		  }
+    	   $.ajax({   		   
+    		   type:"POST",
+    		   url:"${contextpath}/login/loginContro/updateMenu.dhtml",
+    		   data:$("#"+formId).serialize(),
+    		   dataType:"text",
+    	       success:function(msg){
+    	    	   $.messager.alert('提示','修改成功!','info',function(){
+    	    		   $('#'+id).window('close');
+    	    		   window.location.href="${contextpath}/login/loginContro/menuList.dhtml";
+    	    	   })
+    	    	   
+    	       },
+    	       error:function (XMLHttpRequest, textStatus, errorThrown){
+    	    	   $.messager.alert('警告','出错了！','error');   
+    	       }
+    	   });
+       }
+       
+       
+    </script>
+    <table id="tt" style="width:100%;height:auto;" ></table>
+    <input type="hidden" id="menuId" value=""/>
+    <input type="hidden" id="menuLeval" value=""/>
+    <input type="hidden" id="menuName" value=""/>
+    <input type="hidden" id="code1" value=""/>
+    <input type="hidden" id="url1" value=""/>
+    <input type="hidden" id="imagePath1" value=""/>
+    <div id="mm" class="easyui-menu" style="width:120px;">
+       <div data-options="iconCls:'icon-add'">
+            <span>添加</span>
+			<div style="width:280px;">
+			    <div onclick="todid('5')">添加（一级菜单）</div>
+			    <div onclick="todid('1')">添加（二级，三级，四级）菜单</div>				
+			</div>
+       </div>
+       <div data-options="iconCls:'icon-remove'" onclick="todid('2')">删除</div>
+       <div data-options="iconCls:'icon-edit'" onclick="todid('3')">编辑</div>  
+       <div data-options="iconCls:'icon-reload'" onclick="todid('4')">刷新</div>  
+    </div>
+    <div id="win" style="display:none;text-align: center;line-height:30px" >
+       <form id="formdata" action="" method="post" >                            
+            <p><span style="float:left;margin-left:50px">菜单等级：</span><span id="cc" style="float:left;"></span></p> <br/>
+            <p><span style="float:left;margin-left:50px">父级菜单：</span><span id="funame" style="float:left;"></span></p> <br/>                         
+                              菜单名称：<input id="1" name="menuName" class="easyui-textbox" style="width:220px" value="" maxlength="20"> <br/>
+                              引用地址：<input id="2" name="url" class="easyui-textbox" style="width:220px" value="" maxlength="200"> <br/>
+                              图片地址：<input id="3" name="imagePath" class="easyui-textbox" style="width:220px" value="" maxlength="100"> <br/>
+            <input type="hidden" name="parentCode" id="parentCode" value=""/>                                         
+            <input type="hidden" name="leval" id="leval" value=""/>                                         
+          <a id="btn1" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'" onclick="saveForm('win','formdata')">保存</a>
+          &nbsp;&nbsp;&nbsp;&nbsp;  
+          <a id="btn2" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#win').window('close');">取消</a>                                
+       </form>
+    </div> 
+  
+    <div id="win1" style="display:none;text-align: center;line-height:30px" >
+       <form id="formdata1" action="" method="post" >                            
+                              菜单名称：<input id="4" name="menuName" class="easyui-textbox" style="width:220px" value="" maxlength="20"> <br/>
+                              引用地址：<input id="5" name="url" class="easyui-textbox" style="width:220px" value="" maxlength="200"> <br/>
+                              图片地址：<input id="6" name="imagePath" class="easyui-textbox" style="width:220px" value="" maxlength="100"> <br/>                                        
+            <input type="hidden" name="leval" id="leval1" value="1"/>
+          <a id="btn1" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'" onclick="saveForm('win1','formdata1')">保存</a>
+          &nbsp;&nbsp;&nbsp;&nbsp;  
+          <a id="btn2" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#win1').window('close');">取消</a>                                
+       </form>
+    </div> 
+    
+    <div id="win2" style="display:none;text-align: center;line-height:30px" >
+       <form id="formdata2" action="" method="post" >                            
+                              菜单名称：<input id="m7" name="menuName" class="" style="width:220px;height:20px;" value="" maxlength="20"> <br/>
+                              引用地址：<input id="m8" name="url" class="" style="width:220px;height:20px;" value="" maxlength="200"> <br/>
+                              图片地址：<input id="m9" name="imagePath" class="" style="width:220px;height:20px;" value="" maxlength="100"> <br/>                                        
+            <input type="hidden" name="id" id="id2" value=""/>
+          <a id="btn1" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'" onclick="saveForm2('win2','formdata2')">保存</a>
+          &nbsp;&nbsp;&nbsp;&nbsp;  
+          <a id="btn2" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#win2').window('close');">取消</a>                                
+       </form>
+    </div> 
+    
+    
+</body>
+
+</html>

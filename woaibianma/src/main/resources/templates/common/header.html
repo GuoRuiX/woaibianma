@@ -1,0 +1,110 @@
+
+<link rel="stylesheet" type="text/css" href="${stylePath}/easyUi/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="${stylePath}/easyUi/themes/icon.css">
+<script type="text/javascript" src="${stylePath}/easyUi/jquery.min.js"></script>
+<script type="text/javascript" src="${stylePath}/easyUi/jquery.easyui.min.js"></script>
+
+
+<#macro menu menus>
+<div id="mm" class="easyui-menu" style="width:240px;">
+        <#if (menus??)&&(menus?size>0)>
+		    <#list menus as menu1>		        
+		        <#if (menu1.listm??)&&(menu1.listm?size>0) >
+		             <div>
+		                <span style="font-weight:bold;">${menu1.menuName!''}</span>
+		                <div style="width:300px;">
+		                    <#list menu1.listm as m2>
+		                         <#if (m2.listm??)&&(m2.listm?size>0)>
+		                               <div>
+											<span style="font-weight:bold;">${m2.menuName!''}</span>
+											<div style="width:240px;">
+											     <#if (m2.listm??)&&(m2.listm?size>0) >
+											         <#list m2.listm as m3>
+											              <div onclick="toConcent('${m3.url!''}')">${m3.menuName!''}</div>
+											         </#list>
+											     </#if>
+											</div>
+									   </div>		
+		                            <#else>
+		                               <div data-options="iconCls:''">${m2.menuName!''}</div>
+		                         </#if>
+		                    </#list>
+		                </div>
+		             </div>  
+		            <#else>
+		            <div>${menu1.menuName!''}</div>
+		        </#if>
+		    </#list>		    
+	    </#if>
+	</div>
+	<script>
+		$(function(){
+			$(document).bind('contextmenu',function(e){
+				e.preventDefault();
+				$('#mm').menu('show', {
+					left: e.pageX,
+					top: e.pageY
+				});
+			});
+			
+			$(".zli").mousemove(function(e){
+				//alert(this.id)
+			});
+		});
+		
+		function toConcent(url){
+			$("#conten_form").attr("action",url);
+			$("#conten_form").submit();
+		}
+	</script>
+</#macro>
+
+
+<#macro accordion listm>
+<div id="aa" class="easyui-accordion" style="width:500px;height:300px;" onclick="closepanl()">
+		<div title="About" data-options="iconCls:'icon-ok'" style="overflow:auto;padding:10px;">
+			<h3 style="color:#0099FF;">Accordion for jQuery</h3>			
+		</div>		
+</div>
+<script>
+function closepanl(){
+	$("#aa").css("display","none");
+}
+</script>
+</#macro>
+
+<#macro menuli menus>
+<#if (menus??)&&(menus?size>0)>
+<ul class="menu item pull-left" id="J_common_header_menu" data-spm="201">
+	<#list menus as menu1>	
+	     <li class="top-menu-item" has-dropdown="true" menu-type="solution" data-spm-click="gostr=/aliyun;locaid=">
+          <span class="menu-hd">
+              ${menu1.menuName!''}          
+          </span>
+          <div class="menu-dropdown solutions solution-bg">
+            <div class="menu-dropdown-inner module-padding solution-inner common-header-clearfix">              
+		      <#if (menu1.listm??)&&(menu1.listm?size>0) >
+			      <#list menu1.listm as m2>
+		              <div class="module-wrap last" style="">
+		                <div class="module-hd">
+		                    ${m2.menuName!''}
+		                </div>
+		                <div class="module-bd">
+		                  <#if (m2.listm??)&&(m2.listm?size>0) >
+			                 <#list m2.listm as m3>
+				                  <a href="${m3.url!''}" target="topFrame">
+				                     ${m3.menuName!''}
+				                  </a>
+		                    </#list>
+		                  </#if>
+		                </div>
+		              </div>
+	              </#list>
+              </#if>
+            </div>
+          </div>
+        </li>
+	</#list>
+</ul>		    
+</#if>		    
+</#macro>
