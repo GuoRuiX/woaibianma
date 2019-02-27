@@ -62,6 +62,7 @@
         </dependency>
 
         <!-- 这个jar用来访问静态文件star -->
+        <!--测试GitHub-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
