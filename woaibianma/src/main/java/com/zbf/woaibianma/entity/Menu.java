@@ -19,7 +19,7 @@ public class Menu extends IdEntity {
   private List<Menu> listm;
   private Date createTime;
 
-  
+  //²âÊÔ²âÊÔ
 public Date getCreateTime() {
 	return createTime;
 }
